@@ -288,6 +288,64 @@ This macro also supports an object literal as an additional argument.
 <div class="top-section">
     @require('header.html', {"title": "First Section"})
 </div>
+
+<!-- 支持换行，支持js对象，使用<%%> 包裹即可 -->
+<div class="top-section">
+    @require(
+        <%'header.html'%>, 
+        <%{ title : "First Section"}%>
+    )
+</div>
+
+<!-- 支持ES6的模板字符串 -->
+<div class="top-section">
+    @require(
+        <%'header.html'%>, 
+        <%{ title : `First Section`}%>
+    )
+</div>
+```
+
+添加webpack中自定义模块的支持
+
+``` js
+// webpack中配置片段
+
+/* 设置自定义模块解析 */
+resolve: {
+    /* 别名 */
+    alias: {
+        '@': path.resolve(__dirname, './src'),
+
+        // 设置这些别名模块
+        src: path.resolve(__dirname, '../src/'),
+
+        // 设置页面中需要使用到的别名模块
+        './@component': path.resolve(__dirname, '../src/components')
+    },
+    /* 文件查询扩展 */
+    extensions: ['.ts', '.js', '.tsx', '.jsx', '.json'],
+},
+```
+
+``` html
+<!-- html代码片段 -->
+<div class="form-group">
+    <label for="<%= id%>"><%= name%></label>
+    <input type="<%= type%>" name="<%= id%>" class="form-control" id="<%= id%>" placeholder="<%= placeholder%>" <% if (readonly) { %>
+    <%= readonly="readonly"%>
+        <% } %> />
+
+</div>
+```
+
+``` html
+<!-- 使用html代码片段 -->
+<div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 form-inline">
+    @require(<%'./@component/form/input.html'%>,
+    <%{id: "testName", name:"测试名称", placeholder: "请输入测试名称", readonly: false, type:"text"}%>)
+</div>
+
 ```
 
 #### The *include* macro
